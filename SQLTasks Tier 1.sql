@@ -112,7 +112,23 @@ ORDER BY cost DESC
 
 /* Q9: This time, produce the same result as in Q8, but using a subquery. */
 
+SELECT member, facility, cost
+FROM (
 
+SELECT Members.surname AS member, Facilities.name AS facility,
+CASE
+WHEN Members.memid =0
+THEN Bookings.slots * Facilities.guestcost
+ELSE Bookings.slots * Facilities.membercost
+END AS cost
+FROM Members
+JOIN Bookings ON Members.memid = Bookings.memid
+JOIN Facilities ON Bookings.facid = Facilities.facid
+WHERE Bookings.starttime >= '2012-09-14'
+AND Bookings.starttime < '2012-09-15'
+) AS bookings
+WHERE cost >30
+ORDER BY cost DESC
 
 /* PART 2: SQLite
 /* We now want you to jump over to a local instance of the database on your machine. 
